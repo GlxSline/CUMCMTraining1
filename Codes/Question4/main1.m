@@ -1,13 +1,13 @@
-%* 约束方程
-function F = segment_eq_1(x, rho1, theta1, k, l)
-    rho2 = x(1);
-    theta2 = x(2);
-    F = [
-         rho2 - rho1 - k * (theta2 - theta1);
-         rho1 ^ 2 + rho2 ^ 2 - 2 * rho1 * rho2 * cos(theta2 - theta1) - l ^ 2
-         ];
+% %* 约束方程
+% function F = segment_eq_1(x, rho1, theta1, k, l)
+%     rho2 = x(1);
+%     theta2 = x(2);
+%     F = [
+%          rho2 - rho1 - k * (theta2 - theta1);
+%          rho1 ^ 2 + rho2 ^ 2 - 2 * rho1 * rho2 * cos(theta2 - theta1) - l ^ 2
+%          ];
 
-end
+% end
 
 %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!%
 %* -100~0
@@ -21,10 +21,10 @@ bench_numb = 224;
 
 t_of_theta1 = @(theta) theta * sqrt(theta ^ 2 + 1) / 2 + log(theta + sqrt(theta ^ 2 + 1));
 
-r_sol = zeros(size(t));
-theta_sol = zeros(size(t));
+r_sol = zeros(numel(t), 1);
+theta_sol = zeros(numel(t), 1);
 opts_fz = optimset('Display', 'off');
-theta0 = 0;
+theta0 = -2.5;
 
 for i = 1:numel(t)
     ti = t(i);

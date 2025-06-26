@@ -10,7 +10,7 @@ function [rho, theta, x, y] = rho_theta_of_t(ta)
     elseif ta < t2 %* II
         [rho, theta, x, y] = calculate3(ta);
     else %* III
-
+        [rho, theta, x, y] = calculate3(ta);
     end
 
 end
@@ -77,50 +77,46 @@ end
 
 function [rho, theta, x, y] = calculate4(ta)
     %* r = k (θ + Π/2)；
+    opts_fz = optimset('Display', 'off');
     t_of_theta2 = @(theta) (k / 2) * (theta * sqrt(1 + theta ^ 2) - pi * sqrt(1 + pi ^ 2) ...
-        + log(theta + sqrt(1 + theta ^ 2)) - log(pi + sqrt(1 + pi ^ 2)));
+        + log(theta + sqrt(1 + theta ^ 2)) - log(pi + sqrt(1 + pi ^ 2))) - v * ta;
+    theta = fzero(t_of_theta2, 0, opts_fz);
+    rho = k * (theta + pi / 2);
+    x = rho * cos(theta);
+    y = rho * sin(theta);
 
 end
 
-function F = theta2_of_theta1(input)
+% function F = theta2_of_theta1(input)
 
-end
+% end
 
 %* 约束方程
-function F = segment_eq_1(x, rho1, theta1, k, l)
-    rho2 = x(1);
-    theta2 = x(2);
-    F = [
-         rho2 - rho1 - k * (theta2 - theta1);
-         rho1 ^ 2 + rho2 ^ 2 - 2 * rho1 * rho2 * cos(theta2 - theta1) - l ^ 2
-         ];
 
-end
+% function F = segment_eq_2(x, rho1, theta1, R, xE, yE, l)
+%     rho2 = x(1);
+%     theta2 = x(2);
+%     x1 = rho1 * cos (theta1);
+%     x2 = rho2 * cos (theta2);
+%     y1 = rho1 * sin (theta1);
+%     y2 = rho2 * sin (theta2);
+%     k1 = (y1 - yE) / (x1 - xE);
+%     k2 = (y2 - yE) / (x2 - xE);
 
-function F = segment_eq_2(x, rho1, theta1, R, xE, yE, l)
-    rho2 = x(1);
-    theta2 = x(2);
-    x1 = rho1 * cos (theta1);
-    x2 = rho2 * cos (theta2);
-    y1 = rho1 * sin (theta1);
-    y2 = rho2 * sin (theta2);
-    k1 = (y1 - yE) / (x1 - xE);
-    k2 = (y2 - yE) / (x2 - xE);
+%     vector1 = [x1 - xE; y1 - yE];
+%     vector2 = [x2 - xE; y2 - yE];
+%     % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
+%     % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
+%     theta = atan((k1 - k2) / (1 + k1 * k2));
 
-    vector1 = [x1 - xE; y1 - yE];
-    vector2 = [x2 - xE; y2 - yE];
-    % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
-    % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
-    theta = atan((k1 - k2) / (1 + k1 * k2));
+%     rotation_matrix = [cos(theta), sin(theta); -1 * sin(theta), cos(theta)];
 
-    rotation_matrix = [cos(theta), sin(theta); -1 * sin(theta), cos(theta)];
+%     F = [
+%          vector2 - rotation_matrix * vector1;
+%          R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
+%          ];
 
-    F = [
-         vector2 - rotation_matrix * vector1;
-         R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
-         ];
-
-end
+% end
 
 %* 计算x_E, y_E
 theta_E = 4.5 * 2 * pi / 1.7;
@@ -147,7 +143,7 @@ y_E2 = y_E1 + r_E1E2 * sin(theta_E2);
 x_E4 = (3 * x_E3 - x_E2) / 2;
 y_E4 = (3 * y_E3 - y_E2) / 2;
 
-k_E2E3 = (y3 - y2) / (x3 - x2);
+k_E2E3 = (y_E3 - y_E2) / (x_E3 - x_E2);
 
 width = 1.7;
 k = width / (2 * pi);
@@ -165,10 +161,10 @@ l_E3E5 = theta_E1E3 * r_E3E4;
 t2 = t1 + l_E3E5 / v;
 
 %* x1, y1, rho1, theta1
-result_rho = zeros(numel(t), numb);
-result_theta = zeros(numel(t), numb);
-result_x = zeros(numel(t), numb);
-result_y = zeros(numel(t), numb);
+result_rho = zeros(numel(t), bench_numb);
+result_theta = zeros(numel(t), bench_numb);
+result_x = zeros(numel(t), bench_numb);
+result_y = zeros(numel(t), bench_numb);
 
 for i = 1:numel(t)
     sol = rho_theta_of_t(t);
