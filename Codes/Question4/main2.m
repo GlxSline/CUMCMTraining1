@@ -63,7 +63,7 @@ width = 1.7;
 k = width / (2 * pi);
 v = 1;
 bench_numb = 224;
-ta = linspace(0, 100, 101);
+t = linspace(0, 100, 101);
 
 %* t1
 theta_E1E3 = atan((k_E1E2 - k_E2E3) / (1 + k_E1E2 * k_E2E3));
@@ -86,6 +86,7 @@ for i = 1:numel(t)
     % r_AE1 = sqrt((x - x_E1) ^ 2 + (y - y_E1) ^ 2);
     % k_AE1 = (y - y_E1) / (x - x_E1);
 
+    ta = t(i);
     if ta < t1 %* IV
         theta_AE1 = v * ta / r_E1E2;
         vector_E2E1 = [x_E1 - x_E2; y_E1 - y_E2];
@@ -157,4 +158,5 @@ for i = 1:numel(t)
     result_theta(i, 1) = sol(2);
     result_x(i, 1) = sol(3);
     result_y(i, 1) = sol(4);
+    
 end

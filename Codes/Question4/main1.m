@@ -23,13 +23,11 @@ r0 = 4.5;
 t_of_theta1 = @(theta) (theta * sqrt(theta ^ 2 + 1) / 2 + ...
     log(theta + sqrt(theta ^ 2 + 1)) / 2) * k;
 
-r_guess = r0 + (1:bench_numb-1)' * width;
-theta_guess = r_guess / k;
 r_sol = zeros(numel(t), 1);
 theta_sol = zeros(numel(t), 1);
 opts_fz = optimset('Display', 'off');
 theta0 = r0 / k;
-t_offset = t_of_theta1(theta_start);
+t_offset = t_of_theta1(theta0);
 
 
 for i = 1:numel(t)
