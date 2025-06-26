@@ -1,5 +1,5 @@
 %* 龙头坐标方程
-function [rho, theta, x, y] = t_of_theta2(ta)
+function [rho, theta, x, y] = rho_theta_of_t(ta)
     % x = rho * cos (theta);
     % y = rho * sin (theta);
     % r_AE1 = sqrt((x - x_E1) ^ 2 + (y - y_E1) ^ 2);
@@ -76,7 +76,7 @@ end
 
 function [rho, theta, x, y] = calculate4(ta)
     %* r = k (θ + Π/2)；
-    
+    t_of_theta4
 
 end
 
@@ -163,5 +163,17 @@ l_E3E5 = theta_E1E3 * r_E3E4;
 t2 = t1 + l_E3E5 / v;
 
 %* x1, y1, rho1, theta1
-result_rho
+result_rho = zeros(numel(t), numb);
+result_theta = zeros(numel(t), numb);
+result_x = zeros(numel(t), numb);
+result_y = zeros(numel(t), numb);
+
+for i = 1:numel(t)
+    sol = rho_theta_of_t(t);
+    result_rho(i, 1) = sol(1);
+    result_theta(i, 1) = sol(2);
+    result_x(i, 1) = sol(3);
+    result_y(i, 1) = sol(4);
+end
+
 
