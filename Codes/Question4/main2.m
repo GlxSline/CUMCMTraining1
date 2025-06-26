@@ -94,26 +94,26 @@ for i = 1:numel(t)
         vector_E2A = rotation_matrix * vector_E2E1;
         x = vector_E2A(1) + x_E2;
         y = vector_E2A(2) + y_E2;
-        rho = sqrt(x ^ 2 + y ^ 2);
+        % rho = sqrt(x ^ 2 + y ^ 2);
 
-        if x > 0
+        % if x > 0
 
-            if y >= 0
-                theta = asin(y / rho);
+        %     if y >= 0
+        %         theta = asin(y / rho);
 
-            else
-                theta = pi - asin(y / rho);
-            end
+        %     else
+        %         theta = pi - asin(y / rho);
+        %     end
 
-        elseif x <= 0
+        % elseif x <= 0
 
-            if y >= 0
-                theta = asin(y / rho);
-            else
-                theta = -1 * pi - asin (y / rho);
-            end
+        %     if y >= 0
+        %         theta = asin(y / rho);
+        %     else
+        %         theta = -1 * pi - asin (y / rho);
+        %     end
 
-        end
+        % end
 
     elseif ta < t2 %* II
         theta_AE3 = v * (ta - t1) / r_E3E4;
@@ -122,26 +122,26 @@ for i = 1:numel(t)
         vector_E4A = rotation_matrix * vector_E4E3;
         x = vector_E4A(1) + x_E4;
         y = vector_E4A(2) + y_E4;
-        rho = sqrt(x ^ 2 + y ^ 2);
+        % rho = sqrt(x ^ 2 + y ^ 2);
 
-        if x > 0
+        % if x > 0
 
-            if y >= 0
-                theta = asin(y / rho);
+        %     if y >= 0
+        %         theta = asin(y / rho);
 
-            else
-                theta = pi - asin(y / rho);
-            end
+        %     else
+        %         theta = pi - asin(y / rho);
+        %     end
 
-        elseif x <= 0
+        % elseif x <= 0
 
-            if y >= 0
-                theta = asin(y / rho);
-            else
-                theta = -1 * pi - asin (y / rho);
-            end
+        %     if y >= 0
+        %         theta = asin(y / rho);
+        %     else
+        %         theta = -1 * pi - asin (y / rho);
+        %     end
 
-        end
+        % end
 
     else %* III
         %* r = k (θ + Π/2)；
@@ -154,9 +154,9 @@ for i = 1:numel(t)
         y = rho * sin(theta);
     end
 
-    result_rho(i, 1) = sol(1);
-    result_theta(i, 1) = sol(2);
-    result_x(i, 1) = sol(3);
-    result_y(i, 1) = sol(4);
-    
+    result_rho(i, 1) = rho;
+    result_theta(i, 1) = theta;
+    result_x(i, 1) = x;
+    result_y(i, 1) = y;
+
 end
