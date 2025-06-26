@@ -72,11 +72,13 @@ function [rho, theta, x, y] = calculate3(ta)
         end
 
     end
+
 end
 
 function [rho, theta, x, y] = calculate4(ta)
     %* r = k (θ + Π/2)；
-    t_of_theta2 = 
+    t_of_theta2 = @(theta) (k / 2) * (theta * sqrt(1 + theta ^ 2) - pi * sqrt(1 + pi ^ 2) ...
+        + log(theta + sqrt(1 + theta ^ 2)) - log(pi + sqrt(1 + pi ^ 2)));
 
 end
 
@@ -175,5 +177,3 @@ for i = 1:numel(t)
     result_x(i, 1) = sol(3);
     result_y(i, 1) = sol(4);
 end
-
-
