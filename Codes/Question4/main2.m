@@ -1,91 +1,5 @@
 %* 龙头坐标方程
-function [rho, theta, x, y] = rho_theta_of_t(ta)
-    % x = rho * cos (theta);
-    % y = rho * sin (theta);
-    % r_AE1 = sqrt((x - x_E1) ^ 2 + (y - y_E1) ^ 2);
-    % k_AE1 = (y - y_E1) / (x - x_E1);
 
-    if ta < t1 %* IV
-        [rho, theta, x, y] = calculate2(ta);
-    elseif ta < t2 %* II
-        [rho, theta, x, y] = calculate3(ta);
-    else %* III
-        [rho, theta, x, y] = calculate3(ta);
-    end
-
-end
-
-function [rho, theta, x, y] = calculate2(ta)
-    theta_AE1 = v * ta / r_E1E2;
-    vector_E2E1 = [x_E1 - x_E2; y_E1 - y_E2];
-    rotation_matrix = [cos(theta_AE1), sin(theta_AE1); -1 * sin(theta_AE1), cos(theta_AE1)];
-    vector_E2A = rotation_matrix * vector_E2E1;
-    x = vector_E2A(1) + x_E2;
-    y = vector_E2A(2) + y_E2;
-    rho = sqrt(x ^ 2 + y ^ 2);
-
-    if x > 0
-
-        if y >= 0
-            theta = asin(y / rho);
-
-        else
-            theta = pi - asin(y / rho);
-        end
-
-    elseif x <= 0
-
-        if y >= 0
-            theta = asin(y / rho);
-        else
-            theta = -1 * pi - asin (y / rho);
-        end
-
-    end
-
-end
-
-function [rho, theta, x, y] = calculate3(ta)
-    theta_AE3 = v * (ta - t1) / r_E3E4;
-    vector_E4E3 = [x_E3 - x_E4; y_E3 - y_E4];
-    rotation_matrix = [cos(theta_AE3), -1 * sin(theta_AE3); sin(theta_AE3), cos(theta_AE3)];
-    vector_E4A = rotation_matrix * vector_E4E3;
-    x = vector_E4A(1) + x_E4;
-    y = vector_E4A(2) + y_E4;
-    rho = sqrt(x ^ 2 + y ^ 2);
-
-    if x > 0
-
-        if y >= 0
-            theta = asin(y / rho);
-
-        else
-            theta = pi - asin(y / rho);
-        end
-
-    elseif x <= 0
-
-        if y >= 0
-            theta = asin(y / rho);
-        else
-            theta = -1 * pi - asin (y / rho);
-        end
-
-    end
-
-end
-
-function [rho, theta, x, y] = calculate4(ta)
-    %* r = k (θ + Π/2)；
-    opts_fz = optimset('Display', 'off');
-    t_of_theta2 = @(theta) (k / 2) * (theta * sqrt(1 + theta ^ 2) - pi * sqrt(1 + pi ^ 2) ...
-        + log(theta + sqrt(1 + theta ^ 2)) - log(pi + sqrt(1 + pi ^ 2))) - v * ta;
-    theta = fzero(t_of_theta2, 0, opts_fz);
-    rho = k * (theta + pi / 2);
-    x = rho * cos(theta);
-    y = rho * sin(theta);
-
-end
 
 % function F = theta2_of_theta1(input)
 
@@ -149,7 +63,7 @@ width = 1.7;
 k = width / (2 * pi);
 v = 1;
 bench_numb = 224;
-t = linspace(0, 100, 101);
+ta = linspace(0, 100, 101);
 
 %* t1
 theta_E1E3 = atan((k_E1E2 - k_E2E3) / (1 + k_E1E2 * k_E2E3));
@@ -167,7 +81,78 @@ result_x = zeros(numel(t), bench_numb);
 result_y = zeros(numel(t), bench_numb);
 
 for i = 1:numel(t)
-    sol = rho_theta_of_t(t);
+    % x = rho * cos (theta);
+    % y = rho * sin (theta);
+    % r_AE1 = sqrt((x - x_E1) ^ 2 + (y - y_E1) ^ 2);
+    % k_AE1 = (y - y_E1) / (x - x_E1);
+
+    if ta < t1 %* IV
+        theta_AE1 = v * ta / r_E1E2;
+        vector_E2E1 = [x_E1 - x_E2; y_E1 - y_E2];
+        rotation_matrix = [cos(theta_AE1), sin(theta_AE1); -1 * sin(theta_AE1), cos(theta_AE1)];
+        vector_E2A = rotation_matrix * vector_E2E1;
+        x = vector_E2A(1) + x_E2;
+        y = vector_E2A(2) + y_E2;
+        rho = sqrt(x ^ 2 + y ^ 2);
+
+        if x > 0
+
+            if y >= 0
+                theta = asin(y / rho);
+
+            else
+                theta = pi - asin(y / rho);
+            end
+
+        elseif x <= 0
+
+            if y >= 0
+                theta = asin(y / rho);
+            else
+                theta = -1 * pi - asin (y / rho);
+            end
+
+        end
+
+    elseif ta < t2 %* II
+        theta_AE3 = v * (ta - t1) / r_E3E4;
+        vector_E4E3 = [x_E3 - x_E4; y_E3 - y_E4];
+        rotation_matrix = [cos(theta_AE3), -1 * sin(theta_AE3); sin(theta_AE3), cos(theta_AE3)];
+        vector_E4A = rotation_matrix * vector_E4E3;
+        x = vector_E4A(1) + x_E4;
+        y = vector_E4A(2) + y_E4;
+        rho = sqrt(x ^ 2 + y ^ 2);
+
+        if x > 0
+
+            if y >= 0
+                theta = asin(y / rho);
+
+            else
+                theta = pi - asin(y / rho);
+            end
+
+        elseif x <= 0
+
+            if y >= 0
+                theta = asin(y / rho);
+            else
+                theta = -1 * pi - asin (y / rho);
+            end
+
+        end
+
+    else %* III
+        %* r = k (θ + Π/2)；
+        opts_fz = optimset('Display', 'off');
+        t_of_theta2 = @(theta) (k / 2) * (theta * sqrt(1 + theta ^ 2) - pi * sqrt(1 + pi ^ 2) ...
+            + log(theta + sqrt(1 + theta ^ 2)) - log(pi + sqrt(1 + pi ^ 2))) - v * ta;
+        theta = fzero(t_of_theta2, 0, opts_fz);
+        rho = k * (theta + pi / 2);
+        x = rho * cos(theta);
+        y = rho * sin(theta);
+    end
+
     result_rho(i, 1) = sol(1);
     result_theta(i, 1) = sol(2);
     result_x(i, 1) = sol(3);
