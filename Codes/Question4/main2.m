@@ -1,6 +1,5 @@
 %* 龙头坐标方程
 
-
 % function F = theta2_of_theta1(input)
 
 % end
@@ -66,7 +65,7 @@ bench_numb = 224;
 t = linspace(0, 100, 101);
 
 %* t1
-theta_E1E3 = atan((k_E1E2 - k_E2E3) / (1 + k_E1E2 * k_E2E3));
+theta_E1E3 = pi - atan((k_E1E2 - k_E2E3) / (1 + k_E1E2 * k_E2E3));
 l_E1E3 = theta_E1E3 * r_E1E2;
 t1 = l_E1E3 / v;
 
@@ -87,76 +86,57 @@ for i = 1:numel(t)
     % k_AE1 = (y - y_E1) / (x - x_E1);
 
     ta = t(i);
+
     if ta < t1 %* IV
         theta_AE1 = v * ta / r_E1E2;
         vector_E2E1 = [x_E1 - x_E2; y_E1 - y_E2];
         rotation_matrix = [cos(theta_AE1), sin(theta_AE1); -1 * sin(theta_AE1), cos(theta_AE1)];
         vector_E2A = rotation_matrix * vector_E2E1;
-        x = vector_E2A(1) + x_E2;
-        y = vector_E2A(2) + y_E2;
-        % rho = sqrt(x ^ 2 + y ^ 2);
-
-        % if x > 0
-
-        %     if y >= 0
-        %         theta = asin(y / rho);
-
-        %     else
-        %         theta = pi - asin(y / rho);
-        %     end
-
-        % elseif x <= 0
-
-        %     if y >= 0
-        %         theta = asin(y / rho);
-        %     else
-        %         theta = -1 * pi - asin (y / rho);
-        %     end
-
-        % end
+        x_i = vector_E2A(1) + x_E2;
+        y_i = vector_E2A(2) + y_E2;
+        rho_i = sqrt(x_i ^ 2 + y_i ^ 2);
+        theta_i = atan2(y_i, x_i);
 
     elseif ta < t2 %* II
         theta_AE3 = v * (ta - t1) / r_E3E4;
         vector_E4E3 = [x_E3 - x_E4; y_E3 - y_E4];
         rotation_matrix = [cos(theta_AE3), -1 * sin(theta_AE3); sin(theta_AE3), cos(theta_AE3)];
         vector_E4A = rotation_matrix * vector_E4E3;
-        x = vector_E4A(1) + x_E4;
-        y = vector_E4A(2) + y_E4;
-        % rho = sqrt(x ^ 2 + y ^ 2);
-
-        % if x > 0
-
-        %     if y >= 0
-        %         theta = asin(y / rho);
-
-        %     else
-        %         theta = pi - asin(y / rho);
-        %     end
-
-        % elseif x <= 0
-
-        %     if y >= 0
-        %         theta = asin(y / rho);
-        %     else
-        %         theta = -1 * pi - asin (y / rho);
-        %     end
-
-        % end
+        x_i = vector_E4A(1) + x_E4;
+        y_i = vector_E4A(2) + y_E4;
+        rho_i = sqrt(x_i ^ 2 + y_i ^ 2);
+        theta_i = atan2(y_i, x_i);
 
     else %* III
-        %* r = k (θ + Π/2)；
-        opts_fz = optimset('Display', 'off');
-        t_of_theta2 = @(theta) (k / 2) * (theta * sqrt(1 + theta ^ 2) - pi * sqrt(1 + pi ^ 2) ...
-            + log(theta + sqrt(1 + theta ^ 2)) - log(pi + sqrt(1 + pi ^ 2))) - v * ta;
-        theta = fzero(t_of_theta2, 0, opts_fz);
-        rho = k * (theta + pi / 2);
-        x = rho * cos(theta);
-        y = rho * sin(theta);
+                opts_fz = optimset('Display', 'off');
+        t_of_theta2 = @(theta_i) (k / 2) * (theta_i * sqrt(1 + theta_i ^ 2) - pi * sqrt(1 + pi ^ 2) ...
+            + log(theta_i + sqrt(1 + theta_i ^ 2)) - log(pi + sqrt(1 + pi ^ 2))) - v * ta;
+
+        initial_guess = pi / 2;
+        theta_i = fzero(t_of_theta2, pi / 2, opts_fz);
+        rho_i = k * (theta_i + pi / 2);
+        x_i = rho_i * cos(theta_i);
+        y_i = rho_i * sin(theta_i);
+        % break;
+
     end
 
-    result_rho(i, 1) = rho;
-    result_theta(i, 1) = theta;
-    result_x(i, 1) = x;
-    result_y(i, 1) = y;
+    % for j = i:numel(t)
+    %     %* r = k (θ + Π/2)；
+    %     opts_fz = optimset('Display', 'off');
+    %     t_of_theta2 = @(theta_i) (k / 2) * (theta_i * sqrt(1 + theta_i ^ 2) - pi * sqrt(1 + pi ^ 2) ...
+    %         + log(theta_i + sqrt(1 + theta_i ^ 2)) - log(pi + sqrt(1 + pi ^ 2))) - v * ta;
+
+    %     initial_guess = pi / 2;
+    %     theta_i = fzero(t_of_theta2, pi / 2, opts_fz);
+    %     rho_i = k * (theta_i + pi / 2);
+    %     x_i = rho_i * cos(theta_i);
+    %     y_i = rho_i * sin(theta_i);
+    % end
+
+    result_rho(i, 1) = rho_i;
+    result_theta(i, 1) = theta_i;
+    result_x(i, 1) = x_i;
+    result_y(i, 1) = y_i;
 
 end
