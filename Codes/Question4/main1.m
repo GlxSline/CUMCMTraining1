@@ -157,7 +157,7 @@ v = 1;
 t = linspace(0, -100, 101);
 bench_numb = 224;
 
-t_of_theta = @(theta) theta * sqrt(theta ^ 2 + 1) / 2 + log(theta + sqrt(theta ^ 2 + 1));
+t_of_theta1 = @(theta) theta * sqrt(theta ^ 2 + 1) / 2 + log(theta + sqrt(theta ^ 2 + 1));
 
 r_sol = zeros(size(t));
 theta_sol = zeros(size(t));
@@ -166,7 +166,7 @@ theta0 = 0;
 
 for i = 1:numel(t)
     ti = t(i);
-    funs = @(th) s_of_theta(th) - v * ti;
+    funs = @(th) t_of_theta1(th) - v * ti;
     si = fzero(funs, theta0, opts_fz);
     theta_sol(i) = si;
     r_sol(i) = k * si;

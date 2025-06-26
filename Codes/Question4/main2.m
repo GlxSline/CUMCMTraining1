@@ -76,7 +76,7 @@ end
 
 function [rho, theta, x, y] = calculate4(ta)
     %* r = k (θ + Π/2)；
-    t_of_theta4
+    t_of_theta2 = 
 
 end
 
