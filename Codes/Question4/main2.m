@@ -63,6 +63,8 @@ k = width / (2 * pi);
 v = 1;
 bench_numb = 224;
 t = linspace(0, 100, 101);
+r0 = 4.5;
+theta0 = r0 / k - pi;
 
 %* t1
 theta_E1E3 = pi - atan((k_E1E2 - k_E2E3) / (1 + k_E1E2 * k_E2E3));
@@ -87,7 +89,7 @@ for i = 1:numel(t)
 
     ta = t(i);
 
-    if ta < t1 %* IV
+    if ta <= t1 %* IV
         theta_AE1 = v * ta / r_E1E2;
         vector_E2E1 = [x_E1 - x_E2; y_E1 - y_E2];
         rotation_matrix = [cos(theta_AE1), sin(theta_AE1); -1 * sin(theta_AE1), cos(theta_AE1)];
@@ -97,7 +99,9 @@ for i = 1:numel(t)
         rho_i = sqrt(x_i ^ 2 + y_i ^ 2);
         theta_i = atan2(y_i, x_i);
 
-    elseif ta < t2 %* II
+    elseif (ta > t1 && t(i - 1) < t1)
+
+    elseif ta <= t2 %* II
         theta_AE3 = v * (ta - t1) / r_E3E4;
         vector_E4E3 = [x_E3 - x_E4; y_E3 - y_E4];
         rotation_matrix = [cos(theta_AE3), -1 * sin(theta_AE3); sin(theta_AE3), cos(theta_AE3)];
@@ -107,17 +111,24 @@ for i = 1:numel(t)
         rho_i = sqrt(x_i ^ 2 + y_i ^ 2);
         theta_i = atan2(y_i, x_i);
 
-    else %* III
-                opts_fz = optimset('Display', 'off');
-        t_of_theta2 = @(theta_i) (k / 2) * (theta_i * sqrt(1 + theta_i ^ 2) - pi * sqrt(1 + pi ^ 2) ...
-            + log(theta_i + sqrt(1 + theta_i ^ 2)) - log(pi + sqrt(1 + pi ^ 2))) - v * ta;
+    elseif (ta > t2 && t(i - 1) < t2)
 
-        initial_guess = pi / 2;
-        theta_i = fzero(t_of_theta2, pi / 2, opts_fz);
-        rho_i = k * (theta_i + pi / 2);
+    else %* III
+        opts_fz = optimset('Display', 'off');
+        theta_start = result_theta(i - 1, 1);
+        % t_of_theta2 = @(theta_i) (k / 2) * ((theta_i+ pi) * sqrt(1 + (theta_i+ pi) ^ 2) - pi * sqrt(1 + pi ^ 2) ...
+        %     + log((theta_i+ pi) + sqrt(1 + (theta_i+ pi) ^ 2)) - log(pi + sqrt(1 + pi ^ 2))) - v * (ta - t2);
+
+        t_of_theta2 = @(theta_i) (k / 2) * ...
+            ((theta_i + pi) * sqrt(1 + (theta_i + pi) ^ 2) - ...
+            (theta0 + pi) * sqrt(1 + (theta0 + pi) ^ 2) + ...
+            log((theta_i + pi) + sqrt(1 + (theta_i + pi) ^ 2)) - ...
+            log((theta0 + pi) + sqrt(1 + (theta0 + pi) ^ 2))) - v * (ta - t2);
+
+        theta_i = fzero(t_of_theta2, theta_start, opts_fz);
+        rho_i = k * (theta_i + pi);
         x_i = rho_i * cos(theta_i);
         y_i = rho_i * sin(theta_i);
-        % break;
 
     end
 

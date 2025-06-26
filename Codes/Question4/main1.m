@@ -1,13 +1,13 @@
-% %* 约束方程
-% function F = segment_eq_1(x, rho1, theta1, k, l)
-%     rho2 = x(1);
-%     theta2 = x(2);
-%     F = [
-%          rho2 - rho1 - k * (theta2 - theta1);
-%          rho1 ^ 2 + rho2 ^ 2 - 2 * rho1 * rho2 * cos(theta2 - theta1) - l ^ 2
-%          ];
+%* 约束方程
+function F = segment_eq_1(x, rho1, theta1, k, l)
+    rho2 = x(1);
+    theta2 = x(2);
+    F = [
+         rho2 - rho1 - k * (theta2 - theta1);
+         rho1 ^ 2 + rho2 ^ 2 - 2 * rho1 * rho2 * cos(theta2 - theta1) - l ^ 2
+         ];
 
-% end
+end
 
 %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!%
 % * -100~0
@@ -29,7 +29,6 @@ opts_fz = optimset('Display', 'off');
 theta0 = r0 / k;
 t_offset = t_of_theta1(theta0);
 
-
 for i = 1:numel(t)
     ti = t(i);
     funs = @(th) t_of_theta1(th) - v * ti - v * t_offset;
@@ -39,24 +38,27 @@ for i = 1:numel(t)
     theta0 = si + 0.2;
 end
 
+%* rhoi
 
+result_rho = zeros(numel(t), bench_numb);
+result_theta = zeros(numel(t), bench_numb);
+result_x = zeros(numel(t), bench_numb);
+result_y = zeros(numel(t), bench_numb);
 
+options = optimoptions('fsolve', 'Display', 'off');
 
-% %* rhoi
+for i = 1:numel(t)
 
-% options = optimoptions('fsolve', 'Display', 'off');
+    for j = 1:(bench_numb - 1)
+        rho1 = result_rho(i, j);
+        theta1 = result_theta(i, j);
+        l = (j == 1) * 2.86 + (j > 1) * 1.65;
+        dth0 = l / rho1;
+        x0 = [rho1 + k * dth0; theta1 + dth0];
+        sol = fsolve(@(x) segment_eq_1(x, rho1, theta1, k, l), x0, options);
+        result_rho(i, j + 1) = sol(1);
+        result_theta(i, j + 1) = sol(2);
+    end
 
-% for i = 1:numel(t)
+end
 
-%     for j = 1:(bench_numb - 1)
-%         rho1 = result_rho(i, j);
-%         theta1 = result_theta(i, j);
-%         l = (j == 1) * 2.86 + (j > 1) * 1.65;
-%         dth0 = l / rho1;
-%         x0 = [rho1 + k * dth0; theta1 + dth0];
-%         sol = fsolve(@(x) segment_eq_1(x, rho1, theta1, k, l), x0, options);
-%         result_rho(i, j + 1) = sol(1);
-%         result_theta(i, j + 1) = sol(2);
-%     end
-
-% end
