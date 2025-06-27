@@ -446,18 +446,18 @@ end
 % 在你的主循环结束后添加：
 % 绘制特定时间步
 
-% time_indices = linspace(1, 30, 30); % 选择要显示的时间步
+time_indices = linspace(1, 100, 100); % 选择要显示的时间步
 
-% for idx = time_indices
+for idx = time_indices
 
-%     if idx <= length(t)
-%         plot_dragon_at_time(idx, t, result_x, result_y, bench_numb, ...
-%             x_E1, y_E1, x_E2, y_E2, x_E3, y_E3, x_E4, y_E4, x_E5, y_E5, ...
-%             r_E1E2, r_E3E4);
-%         pause(0.5); % 停留2秒观察
-%     end
+    if idx <= length(t)
+        plot_dragon_at_time(idx*10+1, t, result_x, result_y, bench_numb, ...
+            x_E1, y_E1, x_E2, y_E2, x_E3, y_E3, x_E4, y_E4, x_E5, y_E5, ...
+            r_E1E2, r_E3E4);
+        pause(0.5); % 停留2秒观察
+    end
 
-% end
+end
 
 for i = 1:numel(t)
 

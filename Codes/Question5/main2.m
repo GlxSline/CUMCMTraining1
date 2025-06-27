@@ -106,8 +106,8 @@ k_E2E3 = (y_E3 - y_E2) / (x_E3 - x_E2);
 width = 1.7;
 k = width / (2 * pi);
 v = 1;
-bench_numb = 10;
-t = linspace(0, 100, 1001);
+bench_numb = 5;
+t = linspace(0, 20, 10001);
 r0 = 4.5;
 theta0 = r0 / k - pi;
 
