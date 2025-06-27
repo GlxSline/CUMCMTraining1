@@ -1,9 +1,3 @@
-%* 龙头坐标方程
-
-% function F = theta2_of_theta1(input)
-
-% end
-
 %* 约束方程
 
 function F = segment_eq_1(x, rho1, theta1, k, l)
@@ -15,76 +9,6 @@ function F = segment_eq_1(x, rho1, theta1, k, l)
          ];
 
 end
-
-% function F = segment_eq_2(x, rho1, theta1, R, xE, yE, l)
-%     rho2 = x(1);
-%     theta2 = x(2);
-%     x1 = rho1 * cos (theta1);
-%     x2 = rho2 * cos (theta2);
-%     y1 = rho1 * sin (theta1);
-%     y2 = rho2 * sin (theta2);
-%     % 避免除零错误
-%     if abs(x1 - xE) < 1e-10 || abs(x2 - xE) < 1e-10
-%         F = [0; 0];
-%         return;
-%     end
-
-%     k1 = (y1 - yE) / (x1 - xE);
-%     k2 = (y2 - yE) / (x2 - xE);
-
-%     vector1 = [x1 - xE; y1 - yE];
-%     vector2 = [x2 - xE; y2 - yE];
-%     % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
-%     % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
-%     if abs(1 + k1 * k2) < 1e-10
-%         theta = pi / 2; % 垂直情况
-%     else
-%         theta = atan((k1 - k2) / (1 + k1 * k2));
-%     end
-
-%     % theta = atan((k1 - k2) / (1 + k1 * k2));
-
-%     rotation_matrix = [cos(theta), sin(theta); -1 * sin(theta), cos(theta)];
-
-%     F = vector2 - rotation_matrix * vector1;
-%     %  R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
-
-% end
-
-% function F = segment_eq_3(x, rho1, theta1, R, xE, yE, l)
-%     rho2 = x(1);
-%     theta2 = x(2);
-%     x1 = rho1 * cos (theta1);
-%     x2 = rho2 * cos (theta2);
-%     y1 = rho1 * sin (theta1);
-%     y2 = rho2 * sin (theta2);
-
-%     if abs(x1 - xE) < 1e-10 || abs(x2 - xE) < 1e-10
-%         F = [0; 0];
-%         return;
-%     end
-
-%     k1 = (y1 - yE) / (x1 - xE);
-%     k2 = (y2 - yE) / (x2 - xE);
-
-%     vector1 = [x1 - xE; y1 - yE];
-%     vector2 = [x2 - xE; y2 - yE];
-%     % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
-%     % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
-%     if abs(1 + k1 * k2) < 1e-10
-%         theta = pi / 2; % 垂直情况
-%     else
-%         theta = atan((k1 - k2) / (1 + k1 * k2));
-%     end
-
-%     % theta = atan((k1 - k2) / (1 + k1 * k2));
-
-%     rotation_matrix = [cos(theta), -1 * sin(theta); sin(theta), cos(theta)];
-
-%     F = vector2 - rotation_matrix * vector1;
-%     %  R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
-
-% end
 
 function F = segment_eq_4(x, rho1, theta1, k, l)
     %* ρ = k (θ + pi)
@@ -182,7 +106,7 @@ k_E2E3 = (y_E3 - y_E2) / (x_E3 - x_E2);
 width = 1.7;
 k = width / (2 * pi);
 v = 1;
-bench_numb = 224;
+bench_numb = 10;
 t = linspace(0, 100, 1001);
 r0 = 4.5;
 theta0 = r0 / k - pi;
@@ -443,21 +367,6 @@ for i = 1:numel(t)
 
 end
 
-% 在你的主循环结束后添加：
-% 绘制特定时间步
-
-% time_indices = linspace(1, 30, 30); % 选择要显示的时间步
-
-% for idx = time_indices
-
-%     if idx <= length(t)
-%         plot_dragon_at_time(idx, t, result_x, result_y, bench_numb, ...
-%             x_E1, y_E1, x_E2, y_E2, x_E3, y_E3, x_E4, y_E4, x_E5, y_E5, ...
-%             r_E1E2, r_E3E4);
-%         pause(0.5); % 停留2秒观察
-%     end
-
-% end
 
 for i = 1:numel(t)
 
