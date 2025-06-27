@@ -20,6 +20,13 @@ function plot_dragon_at_time(i, t, result_x, result_y, bench_numb, x_E1, y_E1, x
     x_spiral = rho_spiral .* cos(theta_spiral);
     y_spiral = rho_spiral .* sin(theta_spiral);
     plot(x_spiral, y_spiral, 'k--', 'LineWidth', 1, 'Color', [0.7 0.7 0.7]);
+
+    theta_spiral = linspace(0, 6*pi, 1000);
+    k = 1.7 / (2 * pi);
+    rho_spiral = k * (theta_spiral);
+    x_spiral = rho_spiral .* cos(theta_spiral);
+    y_spiral = rho_spiral .* sin(theta_spiral);
+    plot(x_spiral, y_spiral, 'k--', 'LineWidth', 1, 'Color', [0.7 0.7 0.7]);
     
     % 2. 绘制圆弧轨道
     % 圆弧E1E2 (以E2为圆心)

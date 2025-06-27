@@ -16,82 +16,83 @@ function F = segment_eq_1(x, rho1, theta1, k, l)
 
 end
 
-function F = segment_eq_2(x, rho1, theta1, R, xE, yE, l)
-    rho2 = x(1);
-    theta2 = x(2);
-    x1 = rho1 * cos (theta1);
-    x2 = rho2 * cos (theta2);
-    y1 = rho1 * sin (theta1);
-    y2 = rho2 * sin (theta2);
-    % 避免除零错误
-    if abs(x1 - xE) < 1e-10 || abs(x2 - xE) < 1e-10
-        F = [0; 0];
-        return;
-    end
+% function F = segment_eq_2(x, rho1, theta1, R, xE, yE, l)
+%     rho2 = x(1);
+%     theta2 = x(2);
+%     x1 = rho1 * cos (theta1);
+%     x2 = rho2 * cos (theta2);
+%     y1 = rho1 * sin (theta1);
+%     y2 = rho2 * sin (theta2);
+%     % 避免除零错误
+%     if abs(x1 - xE) < 1e-10 || abs(x2 - xE) < 1e-10
+%         F = [0; 0];
+%         return;
+%     end
 
-    k1 = (y1 - yE) / (x1 - xE);
-    k2 = (y2 - yE) / (x2 - xE);
+%     k1 = (y1 - yE) / (x1 - xE);
+%     k2 = (y2 - yE) / (x2 - xE);
 
-    vector1 = [x1 - xE; y1 - yE];
-    vector2 = [x2 - xE; y2 - yE];
-    % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
-    % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
-    if abs(1 + k1 * k2) < 1e-10
-        theta = pi / 2; % 垂直情况
-    else
-        theta = atan((k1 - k2) / (1 + k1 * k2));
-    end
+%     vector1 = [x1 - xE; y1 - yE];
+%     vector2 = [x2 - xE; y2 - yE];
+%     % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
+%     % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
+%     if abs(1 + k1 * k2) < 1e-10
+%         theta = pi / 2; % 垂直情况
+%     else
+%         theta = atan((k1 - k2) / (1 + k1 * k2));
+%     end
 
-    % theta = atan((k1 - k2) / (1 + k1 * k2));
+%     % theta = atan((k1 - k2) / (1 + k1 * k2));
 
-    rotation_matrix = [cos(theta), sin(theta); -1 * sin(theta), cos(theta)];
+%     rotation_matrix = [cos(theta), sin(theta); -1 * sin(theta), cos(theta)];
 
-    F = vector2 - rotation_matrix * vector1;
-    %  R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
+%     F = vector2 - rotation_matrix * vector1;
+%     %  R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
 
-end
+% end
 
-function F = segment_eq_3(x, rho1, theta1, R, xE, yE, l)
-    rho2 = x(1);
-    theta2 = x(2);
-    x1 = rho1 * cos (theta1);
-    x2 = rho2 * cos (theta2);
-    y1 = rho1 * sin (theta1);
-    y2 = rho2 * sin (theta2);
+% function F = segment_eq_3(x, rho1, theta1, R, xE, yE, l)
+%     rho2 = x(1);
+%     theta2 = x(2);
+%     x1 = rho1 * cos (theta1);
+%     x2 = rho2 * cos (theta2);
+%     y1 = rho1 * sin (theta1);
+%     y2 = rho2 * sin (theta2);
 
-    if abs(x1 - xE) < 1e-10 || abs(x2 - xE) < 1e-10
-        F = [0; 0];
-        return;
-    end
+%     if abs(x1 - xE) < 1e-10 || abs(x2 - xE) < 1e-10
+%         F = [0; 0];
+%         return;
+%     end
 
-    k1 = (y1 - yE) / (x1 - xE);
-    k2 = (y2 - yE) / (x2 - xE);
+%     k1 = (y1 - yE) / (x1 - xE);
+%     k2 = (y2 - yE) / (x2 - xE);
 
-    vector1 = [x1 - xE; y1 - yE];
-    vector2 = [x2 - xE; y2 - yE];
-    % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
-    % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
-    if abs(1 + k1 * k2) < 1e-10
-        theta = pi / 2; % 垂直情况
-    else
-        theta = atan((k1 - k2) / (1 + k1 * k2));
-    end
+%     vector1 = [x1 - xE; y1 - yE];
+%     vector2 = [x2 - xE; y2 - yE];
+%     % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
+%     % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
+%     if abs(1 + k1 * k2) < 1e-10
+%         theta = pi / 2; % 垂直情况
+%     else
+%         theta = atan((k1 - k2) / (1 + k1 * k2));
+%     end
 
-    % theta = atan((k1 - k2) / (1 + k1 * k2));
+%     % theta = atan((k1 - k2) / (1 + k1 * k2));
 
-    rotation_matrix = [cos(theta), -1 * sin(theta); sin(theta), cos(theta)];
+%     rotation_matrix = [cos(theta), -1 * sin(theta); sin(theta), cos(theta)];
 
-    F = vector2 - rotation_matrix * vector1;
-    %  R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
+%     F = vector2 - rotation_matrix * vector1;
+%     %  R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
 
-end
+% end
 
 function F = segment_eq_4(x, rho1, theta1, k, l)
     %* ρ = k (θ + pi)
     rho2 = x(1);
     theta2 = x(2);
     F = [
-         rho2 - rho1 - k * (theta2 - theta1);
+        %  rho2 - rho1 - k * (theta2 - theta1);
+        rho2 - k * (theta2 + pi);
          rho1 ^ 2 + rho2 ^ 2 - 2 * rho1 * rho2 * cos(theta2 - theta1) - l ^ 2
          ];
 
@@ -283,33 +284,60 @@ for i = 1:numel(t)
             rho1 = result_rho(i, j);
             theta1 = result_theta(i, j);
             l = (j == 1) * 2.86 + (j > 1) * 1.65;
-            x0 = [result_rho(i, j), result_theta(i, j)];
-            sol = fsolve(@(x) segment_eq_2(x, rho1, theta1, r_E1E2, x_E2, y_E2, l), x0, options);
-            result_rho(i, j + 1) = sol(1);
-            result_theta(i, j + 1) = sol(2);
-            result_x(i, j + 1) = sol(1) * cos(sol(2));
-            result_y(i, j + 1) = sol(1) * sin(sol(2));
+            % rotation_matrix_temp = [cos(0.9), sin(0.9); -1 * sin(0.9), cos(0.9)];
+            % x0 = rotation_matrix_temp * [result_rho(i, j); result_theta(i, j)];
+            % sol = fsolve(@(x) segment_eq_2(x, rho1, theta1, r_E1E2, x_E2, y_E2, l), x0, options);
+            % result_rho(i, j + 1) = sol(1);
+            % result_theta(i, j + 1) = sol(2);
+            % result_x(i, j + 1) = sol(1) * cos(sol(2));
+            % result_y(i, j + 1) = sol(1) * sin(sol(2));
+
+            theta_rotation = acos((2 * r_E1E2 * r_E1E2 - l ^ 2) / (2 * r_E1E2 * r_E1E2));
+
+            x_1 = rho1 * cos (theta1);
+            y_1 = rho1 * sin (theta1);
+
+            vector1 = [x_1 - x_E2; y_1 - y_E2];
+            rotation_matrix = [cos(theta_rotation), -1 * sin(theta_rotation); sin(theta_rotation), cos(theta_rotation)];
+            vector2 = rotation_matrix * vector1;
+            result_x(i, j + 1) = vector2(1) + x_E2;
+            result_y(i, j + 1) = vector2(2) + y_E2;
+            result_rho(i, j + 1) = sqrt(result_x(i, j + 1) ^ 2 + result_y(i, j + 1) ^ 2);
+            result_theta(i, j + 1) = atan2(result_y(i, j + 1), result_x(i, j + 1));
 
         elseif (area_numb(1) == 3 && area_numb(2) == 3)
             rho1 = result_rho(i, j);
             theta1 = result_theta(i, j);
             l = (j == 1) * 2.86 + (j > 1) * 1.65;
-            x0 = [result_rho(i, j), result_theta(i, j)];
-            sol = fsolve(@(x) segment_eq_3(x, rho1, theta1, r_E3E4, x_E4, y_E4, l), x0, options);
-            result_rho(i, j + 1) = sol(1);
-            result_theta(i, j + 1) = sol(2);
-            result_x(i, j + 1) = sol(1) * cos(sol(2));
-            result_y(i, j + 1) = sol(1) * sin(sol(2));
+            % x0 = [result_rho(i, j), result_theta(i, j)];
+            % sol = fsolve(@(x) segment_eq_3(x, rho1, theta1, r_E3E4, x_E4, y_E4, l), x0, options);
+            % result_rho(i, j + 1) = sol(1);
+            % result_theta(i, j + 1) = sol(2);
+            % result_x(i, j + 1) = sol(1) * cos(sol(2));
+            % result_y(i, j + 1) = sol(1) * sin(sol(2));
+            theta_rotation = acos((2 * r_E3E4 * r_E3E4 - l ^ 2) / (2 * r_E3E4 * r_E3E4));
+
+            x_1 = rho1 * cos (theta1);
+            y_1 = rho1 * sin (theta1);
+
+            vector1 = [x_1 - x_E4; y_1 - y_E4];
+            rotation_matrix = [cos(theta_rotation), sin(theta_rotation); -1 * sin(theta_rotation), cos(theta_rotation)];
+            vector2 = rotation_matrix * vector1;
+            result_x(i, j + 1) = vector2(1) + x_E4;
+            result_y(i, j + 1) = vector2(2) + y_E4;
+            result_rho(i, j + 1) = sqrt(result_x(i, j + 1) ^ 2 + result_y(i, j + 1) ^ 2);
+            result_theta(i, j + 1) = atan2(result_y(i, j + 1), result_x(i, j + 1));
 
         elseif (area_numb(1) == 4 && area_numb(2) == 4)
             rho1 = result_rho(i, j);
             theta1 = result_theta(i, j);
             l = (j == 1) * 2.86 + (j > 1) * 1.65;
             theta0 = l / result_rho(i, j);
-            rotation_matrix = [cos(theta0), sin(theta0); -1 * sin(theta0), cos(theta0)];
-            x_rotation = rotation_matrix * [result_x(i, j); result_y(i, j)];
-            x0(1) = sqrt(x_rotation(1) ^ 2 + x_rotation(2) ^ 2);
-            x0(2) = x0(1) / k - pi;
+            % rotation_matrix = [cos(theta0), sin(theta0); -1 * sin(theta0), cos(theta0)];
+            % x_rotation = rotation_matrix * [result_x(i, j); result_y(i, j)];
+            % x0(1) = sqrt(x_rotation(1) ^ 2 + x_rotation(2) ^ 2);
+            % x0(2) = x0(1) / k - pi;
+            x0 = [rho1, theta1 - theta0];
             sol = fsolve(@(x) segment_eq_4(x, rho1, theta1, k, l), x0, options);
             result_rho(i, j + 1) = sol(1);
             result_theta(i, j + 1) = sol(2);
@@ -343,7 +371,8 @@ for i = 1:numel(t)
             x1 = result_x(i, j);
             y1 = result_y(i, j);
             l = (j == 1) * 2.86 + (j > 1) * 1.65;
-            x0 = [x1, y1];
+            % x0 = [x1, y1];
+            x0 = [0.488, 1.428];
             sol = fsolve(@(x) segment_eq_2_3(x, x1, y1, x_E2, y_E2, r_E1E2, l), x0, options);
             result_x(i, j + 1) = sol(1);
             result_y(i, j + 1) = sol(2);
@@ -354,7 +383,8 @@ for i = 1:numel(t)
             x1 = result_x(i, j);
             y1 = result_y(i, j);
             l = (j == 1) * 2.86 + (j > 1) * 1.65;
-            x0 = [result_x(i - 1, j + 1), result_y(i - 1, j + 1)];
+            % x0 = [result_x(i - 1, j + 1), result_y(i - 1, j + 1)];
+            x0 = [3.049, 1.718];
             sol = fsolve(@(x) segment_eq_3_4(x, x1, y1, x_E4, y_E4, r_E3E4, l), x0, options);
             result_x(i, j + 1) = sol(1);
             result_y(i, j + 1) = sol(2);
@@ -378,15 +408,15 @@ end
 % 在你的主循环结束后添加：
 % 绘制特定时间步
 
-% time_indices = linspace(1, 30, 30); % 选择要显示的时间步
+time_indices = linspace(1, 30, 30); % 选择要显示的时间步
 
-% for idx = time_indices
+for idx = time_indices
 
-%     if idx <= length(t)
-%         plot_dragon_at_time(idx, t, result_x, result_y, bench_numb, ...
-%             x_E1, y_E1, x_E2, y_E2, x_E3, y_E3, x_E4, y_E4, x_E5, y_E5, ...
-%             r_E1E2, r_E3E4);
-%         pause(2); % 停留2秒观察
-%     end
+    if idx <= length(t)
+        plot_dragon_at_time(idx, t, result_x, result_y, bench_numb, ...
+            x_E1, y_E1, x_E2, y_E2, x_E3, y_E3, x_E4, y_E4, x_E5, y_E5, ...
+            r_E1E2, r_E3E4);
+        pause(0.5); % 停留2秒观察
+    end
 
-% end
+end

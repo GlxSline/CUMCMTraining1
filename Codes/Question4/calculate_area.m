@@ -7,11 +7,12 @@ function area_numb = calculate_area(rho, theta, x_E2, y_E2, r_E1E2, k_E1E2, x_E4
     %* II - III
     theta_2_to_3 = acos((2 * r_E3E4 * r_E3E4 - l ^ 2) / (2 * r_E3E4 * r_E3E4));
     %* III - IV
-    fun_3_to_4 = @(th) r_E1E2 ^ 2 + (r_E1E2 + k * th) ^ 2 - l ^ 2 - 2 * r_E1E2 * (r_E1E2 + k * th) * cos(th);
+    fun_3_to_4 = @(th) 4.5 ^ 2 + (4.5 + k * th) ^ 2 - l ^ 2 - 2 * 4.5 * (4.5 + k * th) * cos(th);
     theta_E5 = atan2(y_E5, x_E5);
     options = optimoptions('fsolve', 'Display', 'off');
     theta_3_to_4 = fsolve(fun_3_to_4, theta_E5, options);
     theta_3_to_4 = theta_3_to_4 + 4.5 / k - pi;
+    % theta_3_to_
 
     if rho > 4.5
 
@@ -33,10 +34,11 @@ function area_numb = calculate_area(rho, theta, x_E2, y_E2, r_E1E2, k_E1E2, x_E4
     elseif (r_AE2 - r_E1E2 <= 1e-6)
         area_numb(1) = 2;
         k_E2A = (y - y_E2) / (x - x_E2);
-        theta_AE1 = atan((k_E2A - k_E1E2) / (1 + k_E2A * k_E1E2));
-        % if theta_AE1 < 0
-        %     theta_AE1 = pi + theta_AE1;
-        % end
+        theta_AE1 = atan((k_E1E2 - k_E2A) / (1 + k_E2A * k_E1E2));
+
+        if theta_AE1 < 0
+            theta_AE1 = pi + theta_AE1;
+        end
 
         if theta_AE1 > theta_1_to_2
             area_numb(2) = 2;
@@ -48,9 +50,9 @@ function area_numb = calculate_area(rho, theta, x_E2, y_E2, r_E1E2, k_E1E2, x_E4
         area_numb(1) = 3;
         k_E4A = (y - y_E4) / (x - x_E4);
         theta_AE3 = atan((k_E4A - k_E2E3) / (1 + k_E4A * k_E2E3));
-        % if theta_AE3 < 0 
-        %     theta_AE3 = pi + theta_AE3;
-        % end
+        if theta_AE3 < 0
+            theta_AE3 = pi + theta_AE3;
+        end
 
         if theta_AE3 > theta_2_to_3
             area_numb(2) = 3;
