@@ -75,7 +75,9 @@ for i = 1:numel(t)
 
     for j = 1:bench_numb
         th = result_theta(i, j);
-        result_ki(i, j) = ((8.8 + k * th) * cos(th) + k * sin(th)) / (k * cos(th) - (k * th + 8.8) * sin(th));
+        %* 速度方向
+        % result_ki(i, j) = ((8.8 + k * th) * cos(th) + k * sin(th)) / (k * cos(th) - (k * th + 8.8) * sin(th));
+        result_ki(i, j) = ((sin(th) + th * cos(th)) / ((cos(th) - th * sin(th))));
         result_x(i, j) = result_rho(i, j) * cos(th);
         result_y(i, j) = result_rho(i, j) * sin(th);
 
@@ -86,6 +88,7 @@ end
 for i = 1:numel(t)
 
     for j = 1:(bench_numb - 1)
+        %* 板凳方向
         result_k(i, j) = (result_y(i, j + 1) - result_y(i, j)) / (result_x(i, j + 1) - result_x(i, j));
     end
 

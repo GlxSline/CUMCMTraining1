@@ -91,8 +91,8 @@ function F = segment_eq_4(x, rho1, theta1, k, l)
     rho2 = x(1);
     theta2 = x(2);
     F = [
-        %  rho2 - rho1 - k * (theta2 - theta1);
-        rho2 - k * (theta2 + pi);
+    %  rho2 - rho1 - k * (theta2 - theta1);
+         rho2 - k * (theta2 + pi);
          rho1 ^ 2 + rho2 ^ 2 - 2 * rho1 * rho2 * cos(theta2 - theta1) - l ^ 2
          ];
 
@@ -134,6 +134,22 @@ function F = segment_eq_3_4(x, x1, y1, x_E4, y_E4, R, l)
          (x2 - x_E4) ^ 2 + (y2 - y_E4) ^ 2 - R ^ 2;
          ];
 
+end
+
+function ki = calculate_ki_1(th)
+    ki = (sin(th) + th * cos(th)) / ((cos(th) - th * sin(th)));
+end
+
+function ki = calculate_ki_2(x, y, x_E2, y_E2)
+    ki = -1 * (x - x_E2) / (y - y_E2);
+end
+
+function ki = calculate_ki_3(x, y, x_E4, y_E4)
+    ki = -1 * (x - x_E4) / (y - y_E4);
+end
+
+function ki = calculate_ki_4(th)
+    ki = (sin(th) + (th + pi) * cos(th)) / ((cos(th) - (th + pi) * sin(th)));
 end
 
 %* 计算x_E, y_E
@@ -185,6 +201,11 @@ result_rho = zeros(numel(t), bench_numb);
 result_theta = zeros(numel(t), bench_numb);
 result_x = zeros(numel(t), bench_numb);
 result_y = zeros(numel(t), bench_numb);
+result_ki = zeros(numel(t), bench_numb);
+result_alpha = zeros(numel(t), bench_numb - 1);
+result_beta = zeros(numel(t), bench_numb - 1);
+result_k = zeros(numel(t), bench_numb - 1);
+result_v = zeros(numel(t), bench_numb);
 
 for i = 1:numel(t)
     % x = rho * cos (theta);
@@ -203,7 +224,7 @@ for i = 1:numel(t)
         y_i = vector_E2A(2) + y_E2;
         rho_i = sqrt(x_i ^ 2 + y_i ^ 2);
         theta_i = atan2(y_i, x_i);
-
+        k_i = calculate_ki_2(x_i, y_i, x_E2, y_E2);
         % elseif (ta > t1 && t(i - 1) < t1)
 
     elseif ta <= t2 %* III
@@ -215,6 +236,7 @@ for i = 1:numel(t)
         y_i = vector_E4A(2) + y_E4;
         rho_i = sqrt(x_i ^ 2 + y_i ^ 2);
         theta_i = atan2(y_i, x_i);
+        k_i = calculate_ki_3(x_i, y_i, x_E4, y_E4);
 
         % elseif (ta > t2 && t(i - 1) < t2)
 
@@ -234,6 +256,7 @@ for i = 1:numel(t)
         rho_i = k * (theta_i + pi);
         x_i = rho_i * cos(theta_i);
         y_i = rho_i * sin(theta_i);
+        k_i = calculate_ki_4(theta_i);
 
     end
 
@@ -254,6 +277,7 @@ for i = 1:numel(t)
     result_theta(i, 1) = theta_i;
     result_x(i, 1) = x_i;
     result_y(i, 1) = y_i;
+    result_ki(i, 1) = k_i;
 
 end
 
@@ -280,6 +304,8 @@ for i = 1:numel(t)
             result_x(i, j + 1) = sol(1) * cos(sol(2));
             result_y(i, j + 1) = sol(1) * sin(sol(2));
 
+            result_ki(i, j + 1) = calculate_ki_1(sol(2));
+
         elseif (area_numb(1) == 2 && area_numb(2) == 2)
             rho1 = result_rho(i, j);
             theta1 = result_theta(i, j);
@@ -305,6 +331,8 @@ for i = 1:numel(t)
             result_rho(i, j + 1) = sqrt(result_x(i, j + 1) ^ 2 + result_y(i, j + 1) ^ 2);
             result_theta(i, j + 1) = atan2(result_y(i, j + 1), result_x(i, j + 1));
 
+            result_ki(i, j + 1) = calculate_ki_2(result_x(i, j + 1), result_y(i, j + 1), x_E2, y_E2);
+
         elseif (area_numb(1) == 3 && area_numb(2) == 3)
             rho1 = result_rho(i, j);
             theta1 = result_theta(i, j);
@@ -328,6 +356,8 @@ for i = 1:numel(t)
             result_rho(i, j + 1) = sqrt(result_x(i, j + 1) ^ 2 + result_y(i, j + 1) ^ 2);
             result_theta(i, j + 1) = atan2(result_y(i, j + 1), result_x(i, j + 1));
 
+            result_ki(i, j + 1) = calculate_ki_3(result_x(i, j + 1), result_y(i, j + 1), x_E4, y_E4);
+
         elseif (area_numb(1) == 4 && area_numb(2) == 4)
             rho1 = result_rho(i, j);
             theta1 = result_theta(i, j);
@@ -343,6 +373,8 @@ for i = 1:numel(t)
             result_theta(i, j + 1) = sol(2);
             result_x(i, j + 1) = sol(1) * cos(sol(2));
             result_y(i, j + 1) = sol(1) * sin(sol(2));
+
+            result_ki(i, j + 1) = calculate_ki_4(sol(2));
 
             % fprintf('4-4');
             % disp(i);disp(j);
@@ -367,6 +399,8 @@ for i = 1:numel(t)
             result_x(i, j + 1) = sol(1) * cos(sol(2));
             result_y(i, j + 1) = sol(1) * sin(sol(2));
 
+            result_ki(i, j + 1) = calculate_ki_1(sol(2));
+
         elseif (area_numb(1) == 3 && area_numb(2) == 2)
             x1 = result_x(i, j);
             y1 = result_y(i, j);
@@ -379,6 +413,8 @@ for i = 1:numel(t)
             result_rho(i, j + 1) = sqrt(result_x(i, j + 1) ^ 2 + result_y(i, j + 1) ^ 2);
             result_theta(i, j + 1) = atan2(result_y(i, j + 1), result_x(i, j + 1));
 
+            result_ki(i, j + 1) = calculate_ki_2(result_x(i, j + 1), result_y(i, j + 1), x_E2, y_E2);
+
         elseif (area_numb(1) == 4 && area_numb(2) == 3)
             x1 = result_x(i, j);
             y1 = result_y(i, j);
@@ -390,6 +426,8 @@ for i = 1:numel(t)
             result_y(i, j + 1) = sol(2);
             result_rho(i, j + 1) = sqrt(result_x(i, j + 1) ^ 2 + result_y(i, j + 1) ^ 2);
             result_theta(i, j + 1) = atan2(result_y(i, j + 1), result_x(i, j + 1));
+
+            result_ki(i, j + 1) = calculate_ki_3(result_x(i, j + 1), result_y(i, j + 1), x_E4, y_E4);
 
             % fprintf('3-4');
             % disp(i);disp(j);
@@ -408,15 +446,39 @@ end
 % 在你的主循环结束后添加：
 % 绘制特定时间步
 
-time_indices = linspace(1, 30, 30); % 选择要显示的时间步
+% time_indices = linspace(1, 30, 30); % 选择要显示的时间步
 
-for idx = time_indices
+% for idx = time_indices
 
-    if idx <= length(t)
-        plot_dragon_at_time(idx, t, result_x, result_y, bench_numb, ...
-            x_E1, y_E1, x_E2, y_E2, x_E3, y_E3, x_E4, y_E4, x_E5, y_E5, ...
-            r_E1E2, r_E3E4);
-        pause(0.5); % 停留2秒观察
+%     if idx <= length(t)
+%         plot_dragon_at_time(idx, t, result_x, result_y, bench_numb, ...
+%             x_E1, y_E1, x_E2, y_E2, x_E3, y_E3, x_E4, y_E4, x_E5, y_E5, ...
+%             r_E1E2, r_E3E4);
+%         pause(0.5); % 停留2秒观察
+%     end
+
+% end
+
+for i = 1:numel(t)
+
+    for j = 1:(bench_numb - 1)
+        %* 板凳方向
+        result_k(i, j) = (result_y(i, j + 1) - result_y(i, j)) / (result_x(i, j + 1) - result_x(i, j));
+    end
+
+end
+
+for i = 1:numel(t)
+
+    for j = 1:(bench_numb - 1)
+        result_alpha(i, j) = atan(abs((result_ki(i, j) - result_k(i, j)) / (result_ki(i, j) * result_k(i, j) +1)));
+        result_beta(i, j) = atan(abs((result_ki(i, j + 1) - result_k(i, j)) / (result_ki(i, j + 1) * result_k(i, j) +1)));
+    end
+
+    result_v(i, 1) = 1;
+
+    for j = 1:(bench_numb - 1)
+        result_v(i, j + 1) = result_v(i, j) * cos(result_alpha(i, j)) / cos(result_beta(i, j));
     end
 
 end
