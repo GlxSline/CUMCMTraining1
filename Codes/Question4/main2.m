@@ -6,30 +6,135 @@
 
 %* 约束方程
 
-% function F = segment_eq_2(x, rho1, theta1, R, xE, yE, l)
-%     rho2 = x(1);
-%     theta2 = x(2);
-%     x1 = rho1 * cos (theta1);
-%     x2 = rho2 * cos (theta2);
-%     y1 = rho1 * sin (theta1);
-%     y2 = rho2 * sin (theta2);
-%     k1 = (y1 - yE) / (x1 - xE);
-%     k2 = (y2 - yE) / (x2 - xE);
+function F = segment_eq_1(x, rho1, theta1, k, l)
+    rho2 = x(1);
+    theta2 = x(2);
+    F = [
+         rho2 - rho1 - k * (theta2 - theta1);
+         rho1 ^ 2 + rho2 ^ 2 - 2 * rho1 * rho2 * cos(theta2 - theta1) - l ^ 2
+         ];
 
-%     vector1 = [x1 - xE; y1 - yE];
-%     vector2 = [x2 - xE; y2 - yE];
-%     % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
-%     % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
-%     theta = atan((k1 - k2) / (1 + k1 * k2));
+end
 
-%     rotation_matrix = [cos(theta), sin(theta); -1 * sin(theta), cos(theta)];
+function F = segment_eq_2(x, rho1, theta1, R, xE, yE, l)
+    rho2 = x(1);
+    theta2 = x(2);
+    x1 = rho1 * cos (theta1);
+    x2 = rho2 * cos (theta2);
+    y1 = rho1 * sin (theta1);
+    y2 = rho2 * sin (theta2);
+    % 避免除零错误
+    if abs(x1 - xE) < 1e-10 || abs(x2 - xE) < 1e-10
+        F = [0; 0];
+        return;
+    end
 
-%     F = [
-%          vector2 - rotation_matrix * vector1;
-%          R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
-%          ];
+    k1 = (y1 - yE) / (x1 - xE);
+    k2 = (y2 - yE) / (x2 - xE);
 
-% end
+    vector1 = [x1 - xE; y1 - yE];
+    vector2 = [x2 - xE; y2 - yE];
+    % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
+    % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
+    if abs(1 + k1 * k2) < 1e-10
+        theta = pi / 2; % 垂直情况
+    else
+        theta = atan((k1 - k2) / (1 + k1 * k2));
+    end
+
+    % theta = atan((k1 - k2) / (1 + k1 * k2));
+
+    rotation_matrix = [cos(theta), sin(theta); -1 * sin(theta), cos(theta)];
+
+    F = vector2 - rotation_matrix * vector1;
+    %  R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
+         
+
+end
+
+function F = segment_eq_3(x, rho1, theta1, R, xE, yE, l)
+    rho2 = x(1);
+    theta2 = x(2);
+    x1 = rho1 * cos (theta1);
+    x2 = rho2 * cos (theta2);
+    y1 = rho1 * sin (theta1);
+    y2 = rho2 * sin (theta2);
+
+    if abs(x1 - xE) < 1e-10 || abs(x2 - xE) < 1e-10
+        F = [0; 0];
+        return;
+    end
+
+    k1 = (y1 - yE) / (x1 - xE);
+    k2 = (y2 - yE) / (x2 - xE);
+
+    vector1 = [x1 - xE; y1 - yE];
+    vector2 = [x2 - xE; y2 - yE];
+    % l1 = sqrt((y1 - yE)^2 + (x1 - xE)^2);
+    % l2 = sqrt((y2 - yE)^2 + (x2 - xE)^2);
+    if abs(1 + k1 * k2) < 1e-10
+        theta = pi / 2; % 垂直情况
+    else
+        theta = atan((k1 - k2) / (1 + k1 * k2));
+    end
+
+    % theta = atan((k1 - k2) / (1 + k1 * k2));
+
+    rotation_matrix = [cos(theta), -1 * sin(theta); sin(theta), cos(theta)];
+
+    F = vector2 - rotation_matrix * vector1;
+    %  R ^ 2 + R ^ 2 - 2 * R * R * cos(theta) - l ^ 2;
+
+end
+
+function F = segment_eq_4(x, rho1, theta1, k, l)
+    %* ρ = k (θ + pi)
+    rho2 = x(1);
+    theta2 = x(2);
+    F = [
+         rho2 - rho1 - k * (theta2 - theta1);
+         rho1 ^ 2 + rho2 ^ 2 - 2 * rho1 * rho2 * cos(theta2 - theta1) - l ^ 2
+         ];
+
+end
+
+function F = segment_eq_1_2(x, rho1, theta1, k, l)
+
+    rho2 = x(1);
+    theta2 = x(2);
+    x2 = rho2 * cos (theta2);
+    y2 = rho2 * sin (theta2);
+    x1 = rho1 * cos(theta1);
+    y1 = rho1 * sin(theta1);
+
+    F = [
+         (x2 - x1) ^ 2 + (y2 - y1) ^ 2 - l ^ 2;
+         rho2 - k * theta2;
+         ];
+
+end
+
+function F = segment_eq_2_3(x, x1, y1, x_E2, y_E2, R, l)
+    x2 = x(1);
+    y2 = x(2);
+
+    F = [
+         (x2 - x1) ^ 2 + (y2 - y1) ^ 2 - l ^ 2;
+         (x2 - x_E2) ^ 2 + (y2 - y_E2) ^ 2 - R ^ 2;
+         ];
+
+end
+
+function F = segment_eq_3_4(x, x1, y1, x_E4, y_E4, R, l)
+    x2 = x(1);
+    y2 = x(2);
+
+    F = [
+         (x2 - x1) ^ 2 + (y2 - y1) ^ 2 - l ^ 2;
+         (x2 - x_E4) ^ 2 + (y2 - y_E4) ^ 2 - R ^ 2;
+         ];
+
+end
 
 %* 计算x_E, y_E
 theta_E = 4.5 * 2 * pi / 1.7;
@@ -67,7 +172,7 @@ r0 = 4.5;
 theta0 = r0 / k - pi;
 
 %* t1
-theta_E1E3 = pi - atan((k_E1E2 - k_E2E3) / (1 + k_E1E2 * k_E2E3));
+theta_E1E3 = pi + atan((k_E1E2 - k_E2E3) / (1 + k_E1E2 * k_E2E3));
 l_E1E3 = theta_E1E3 * r_E1E2;
 t1 = l_E1E3 / v;
 
@@ -89,7 +194,7 @@ for i = 1:numel(t)
 
     ta = t(i);
 
-    if ta <= t1 %* IV
+    if ta <= t1 %* II
         theta_AE1 = v * ta / r_E1E2;
         vector_E2E1 = [x_E1 - x_E2; y_E1 - y_E2];
         rotation_matrix = [cos(theta_AE1), sin(theta_AE1); -1 * sin(theta_AE1), cos(theta_AE1)];
@@ -99,9 +204,9 @@ for i = 1:numel(t)
         rho_i = sqrt(x_i ^ 2 + y_i ^ 2);
         theta_i = atan2(y_i, x_i);
 
-    elseif (ta > t1 && t(i - 1) < t1)
+        % elseif (ta > t1 && t(i - 1) < t1)
 
-    elseif ta <= t2 %* II
+    elseif ta <= t2 %* III
         theta_AE3 = v * (ta - t1) / r_E3E4;
         vector_E4E3 = [x_E3 - x_E4; y_E3 - y_E4];
         rotation_matrix = [cos(theta_AE3), -1 * sin(theta_AE3); sin(theta_AE3), cos(theta_AE3)];
@@ -111,9 +216,9 @@ for i = 1:numel(t)
         rho_i = sqrt(x_i ^ 2 + y_i ^ 2);
         theta_i = atan2(y_i, x_i);
 
-    elseif (ta > t2 && t(i - 1) < t2)
+        % elseif (ta > t2 && t(i - 1) < t2)
 
-    else %* III
+    else %* IV
         opts_fz = optimset('Display', 'off');
         theta_start = result_theta(i - 1, 1);
         % t_of_theta2 = @(theta_i) (k / 2) * ((theta_i+ pi) * sqrt(1 + (theta_i+ pi) ^ 2) - pi * sqrt(1 + pi ^ 2) ...
@@ -149,5 +254,100 @@ for i = 1:numel(t)
     result_theta(i, 1) = theta_i;
     result_x(i, 1) = x_i;
     result_y(i, 1) = y_i;
+
+end
+
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!%
+
+for i = 1:numel(t)
+
+    for j = 1:bench_numb - 1
+        rho1 = result_rho(i, j);
+        theta1 = result_theta(i, j);
+        l = (j == 1) * 2.86 + (j > 1) * 1.65;
+
+        area_numb = calculate_area(rho1, theta1, x_E2, y_E2, r_E1E2, k_E1E2, x_E4, y_E4, r_E3E4, k_E2E3, x_E5, y_E5, k, l);
+        options = optimoptions('fsolve', 'Display', 'off');
+
+        if (area_numb(1) == 1 && area_numb(2) == 1)
+            rho1 = result_rho(i, j);
+            theta1 = result_theta(i, j);
+            l = (j == 1) * 2.86 + (j > 1) * 1.65;
+            x0 = [result_rho(i, j), result_theta(i, j)];
+            sol = fsolve(@(x) segment_eq_1(x, rho1, theta1, k, l), x0, options);
+            result_rho(i, j + 1) = sol(1);
+            result_theta(i, j + 1) = sol(2);
+            result_x(i, j + 1) = sol(1) * cos(sol(2));
+            result_y(i, j + 1) = sol(1) * sin(sol(2));
+
+        elseif (area_numb(1) == 2 && area_numb(2) == 2)
+            rho1 = result_rho(i, j);
+            theta1 = result_theta(i, j);
+            l = (j == 1) * 2.86 + (j > 1) * 1.65;
+            x0 = [result_rho(i, j), result_theta(i, j)];
+            result_rho(i, j + 1) = sol(1);
+            result_theta(i, j + 1) = sol(2);
+            sol = fsolve(@(x) segment_eq_2(x, rho1, theta1, r_E1E2, x_E2, y_E2, l), x0, options);
+            result_x(i, j + 1) = sol(1) * cos(sol(2));
+            result_y(i, j + 1) = sol(1) * sin(sol(2));
+
+        elseif (area_numb(1) == 3 && area_numb(2) == 3)
+            rho1 = result_rho(i, j);
+            theta1 = result_theta(i, j);
+            l = (j == 1) * 2.86 + (j > 1) * 1.65;
+            x0 = [result_rho(i, j), result_theta(i, j)];
+            sol = fsolve(@(x) segment_eq_3(x, rho1, theta1, r_E3E4, x_E4, y_E4, l), x0, options);
+            result_rho(i, j + 1) = sol(1);
+            result_theta(i, j + 1) = sol(2);
+            result_x(i, j + 1) = sol(1) * cos(sol(2));
+            result_y(i, j + 1) = sol(1) * sin(sol(2));
+
+        elseif (area_numb(1) == 4 && area_numb(2) == 4)
+            rho1 = result_rho(i, j);
+            theta1 = result_theta(i, j);
+            l = (j == 1) * 2.86 + (j > 1) * 1.65;
+            x0 = [result_rho(i, j), result_theta(i, j)];
+            sol = fsolve(@(x) segment_eq_4(x, rho1, theta1, k, l), x0, options);
+            result_rho(i, j + 1) = sol(1);
+            result_theta(i, j + 1) = sol(2);
+            result_x(i, j + 1) = sol(1) * cos(sol(2));
+            result_y(i, j + 1) = sol(1) * sin(sol(2));
+
+        elseif (area_numb(1) == 1 && area_numb(2) == 2)
+            rho1 = result_rho(i, j);
+            theta1 = result_theta(i, j);
+            l = (j == 1) * 2.86 + (j > 1) * 1.65;
+            x0 = [result_rho(i, j), result_theta(i, j)];
+            sol = fsolve(@(x) segment_eq_1_2(x, rho1, theta1, k, l), x0, options);
+            result_rho(i, j + 1) = sol(1);
+            result_theta(i, j + 1) = sol(2);
+            result_x(i, j + 1) = sol(1) * cos(sol(2));
+            result_y(i, j + 1) = sol(1) * sin(sol(2));
+
+        elseif (area_numb(1) == 2 && area_numb(2) == 3)
+            x1 = result_x(i, j);
+            y1 = result_y(i, j);
+            l = (j == 1) * 2.86 + (j > 1) * 1.65;
+            x0 = [x1, y1];
+            sol = fsolve(@(x) segment_eq_2_3(x, x1, y1, x_E2, y_E2, R, r_E1E2), x0, options);
+            result_x(i, j + 1) = sol(1);
+            result_y(i, j + 1) = sol(2);
+            result_rho(i, j + 1) = sqrt(result_x(i, j + 1) ^ 2 + result_y(i, j + 1) ^ 2);
+            result_theta(i, j + 1) = atan2(result_y(i, j + 1), result_x(i, j + 1));
+
+        elseif (area_numb(1) == 3 && area_numb(2) == 4)
+            x1 = result_x(i, j);
+            y1 = result_y(i, j);
+            l = (j == 1) * 2.86 + (j > 1) * 1.65;
+            x0 = [x1, y1];
+            sol = fsolve(@(x) segment_eq_2_3(x, x1, y1, x_E4, y_E4, R, r_E3E4), x0, options);
+            result_x(i, j + 1) = sol(1);
+            result_y(i, j + 1) = sol(2);
+            result_rho(i, j + 1) = sqrt(result_x(i, j + 1) ^ 2 + result_y(i, j + 1) ^ 2);
+            result_theta(i, j + 1) = atan2(result_y(i, j + 1), result_x(i, j + 1));
+
+        end
+
+    end
 
 end
