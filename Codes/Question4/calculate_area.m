@@ -13,19 +13,15 @@ function area_numb = calculate_area(rho, theta, x_E2, y_E2, r_E1E2, k_E1E2, x_E4
     theta_3_to_4 = fsolve(fun_3_to_4, theta_E5, options);
     theta_3_to_4 = theta_3_to_4 + 4.5 / k - pi;
 
-    if rho >= 4.5
+    if rho > 4.5
 
-        if rho == k * theta
+        if abs(rho - k * theta) < 1e-6
             area_numb(1) = 1;
             area_numb(2) = 1;
+
         else
             area_numb(1) = 4;
-            % k_A = y / x;
-            % k_E5 = y_E5 / x_E5;
-            % theta_AE5 = atan((k_A - k_E5) / (1 + k_A * k_E5));
 
-            % if theta_AE5
-            % area_numb(2) = 4;
             if theta > theta_3_to_4
                 area_numb(2) = 4;
             else
@@ -34,7 +30,7 @@ function area_numb = calculate_area(rho, theta, x_E2, y_E2, r_E1E2, k_E1E2, x_E4
 
         end
 
-    elseif r_AE2 < r_E1E2
+    elseif r_AE2 <= r_E1E2
         area_numb(1) = 2;
         k_E2A = (y - y_E2) / (x - x_E2);
         theta_AE1 = atan((k_E2A - k_E1E2) / (1 + k_E2A * k_E1E2));
